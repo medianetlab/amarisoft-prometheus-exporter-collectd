@@ -11,7 +11,7 @@ def read_thread(epc_ip):
     try:
         
         ws = create_connection('ws://%s:9000' % epc_ip)
-
+        ws.recv()
         # CPU Load
         ws.send('{"message":"stats"}')
         result =  ws.recv()

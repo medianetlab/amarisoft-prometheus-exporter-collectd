@@ -9,6 +9,7 @@ enb_list = []
 def read_thread(enb_ip):
     try:
         ws = create_connection('ws://%s:9001' % enb_ip)
+        ws.recv()
         ws.send('{"message":"stats"}')
         result =  ws.recv()
         j_res = json.loads(result)
