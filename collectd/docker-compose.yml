@@ -1,0 +1,11 @@
+collectd:
+  image: medianetlab/collectd
+  volumes:
+    - ./data:/etc/collectd
+    - ./data/types.db:/usr/share/collectd/types.db
+
+  pid: host
+  restart: always
+
+  ports:
+    - '9103:9103'
