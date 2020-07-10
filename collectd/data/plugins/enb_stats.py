@@ -17,9 +17,9 @@ def read_thread(enb_ip):
         # CPU Load
         vl = collectd.Values(type='vcpu')
         vl.host=enb_ip
-        vl.plugin="enb_cpu"
-        vl.plugin_instance="cpu"
-        vl.type_instance="cpu"
+        vl.plugin="amarisoft"
+        vl.plugin_instance="enb"
+        vl.type_instance="single_core"
         vl.interval=5
         cpu=j_res['cpu']['global']
         vl.dispatch(values=[cpu])
@@ -64,6 +64,7 @@ def read_thread(enb_ip):
                 vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['dl_bitrate']])
                 vl.type_instance='ul'
                 vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['ul_bitrate']])
+     
 
         # ue cqi
         for i in range (0,len(j_res['ue_list'])):
@@ -119,11 +120,12 @@ def read_thread(enb_ip):
                 vl.type_instance='snr'
                 vl.interval=5
                 vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['pusch_snr']])
-
+        ws.shutdown
 
     except Exception as e:
         print(e)
         print('enb @ %s is not connected !' % enb_ip)
+        ws.shutdown
 
 
 def read(data=None):

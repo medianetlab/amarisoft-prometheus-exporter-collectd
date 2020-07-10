@@ -48,7 +48,7 @@ def read_thread(epc_ip):
                 print(enb_ue_id)
                 print(mme_ue_id)
                 print(imsi+" CONNECTED")
-            except Exception as ex:
+            except Exception:
                 print(imsi+" DISCONNECTED")
             print(registered)
 

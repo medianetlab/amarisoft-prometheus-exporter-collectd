@@ -2,6 +2,7 @@ import collectd
 from websocket import create_connection
 import json
 import threading
+import epc_utils as utils
 
 
 
@@ -12,19 +13,11 @@ def read_thread(epc_ip):
         
         ws = create_connection('ws://%s:9000' % epc_ip)
         ws.recv()
-        # CPU Load
         ws.send('{"message":"stats"}')
         result =  ws.recv()
-        j_res = json.loads(result)
-        vl = collectd.Values(type='vcpu')
-        vl.host=epc_ip
-        vl.plugin="epc_cpu"
-        vl.plugin_instance="cpu"
-        vl.type_instance="cpu"
-        vl.interval=5
-        cpu=j_res['cpu']['global']
-        vl.dispatch(values=[cpu])
-
+        utils.cpu_load(ws, result, epc_ip)
+        utils.s1_connections(ws, result, epc_ip)
+        utils.ng_connections(ws, result, epc_ip)
         ws.send('{"message":"enb"}')
         result =  ws.recv()
         j_res = json.loads(result)
@@ -42,14 +35,15 @@ def read_thread(epc_ip):
             address=address[0:address.index(":")]
             vl.plugin='epc_enb_ctx'
             vl.plugin_instance="ip_"+str(address)+"_ID_"+str(eNB_ID)+"_ID"
-            vl.type_instance=plmn
+            vl.type_instance = "plmn:{}".format(plmn)
             vl.interval=5
             vl.dispatch(values=[ue_ctx])
-
+        ws.shutdown
 
     except Exception as e:
         print(e)
         print('epc @ %s is not connected !' % epc_ip)
+        ws.shutdown
 
 
 def read(data=None):
@@ -62,7 +56,7 @@ def read(data=None):
 
 
 def write(vl, data=None):
-    print "(plugin: %s host: %s type: %s pl.i: %s ty.i: %s): %s\n" % (vl.plugin, vl.host, vl.type,vl.plugin_instance,vl.type_instance, vl.values)
+    print ("(plugin: %s host: %s type: %s pl.i: %s ty.i: %s): %s\n" % (vl.plugin, vl.host, vl.type,vl.plugin_instance,vl.type_instance, vl.values))
 
 
 
