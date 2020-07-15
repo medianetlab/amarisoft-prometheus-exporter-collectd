@@ -2,6 +2,7 @@ import collectd
 from websocket import create_connection
 import json
 import threading
+import enb_utils as utils
 
 
 enb_list = []
@@ -12,17 +13,7 @@ def read_thread(enb_ip):
         ws.recv()
         ws.send('{"message":"stats"}')
         result =  ws.recv()
-        j_res = json.loads(result)
-
-        # CPU Load
-        vl = collectd.Values(type='vcpu')
-        vl.host=enb_ip
-        vl.plugin="amarisoft"
-        vl.plugin_instance="enb"
-        vl.type_instance="single_core"
-        vl.interval=5
-        cpu=j_res['cpu']['global']
-        vl.dispatch(values=[cpu])
+        utils.cpu_load(ws, result, epc_ip)
 
 
         # enb throughput
