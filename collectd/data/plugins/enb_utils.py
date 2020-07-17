@@ -1,11 +1,10 @@
 import collectd  
 import json
 
-def cpu_load(ws, result, epc_ip):
+def cpu_load(ws, j_res, enb_ip):
     try:
-        j_res = json.loads(result)
         vl = collectd.Values(type='vcpu')
-        vl.host = epc_ip
+        vl.host = enb_ip
         vl.plugin = "resources"
         vl.plugin_instance = "enb"
         vl.type_instance = "single_core"

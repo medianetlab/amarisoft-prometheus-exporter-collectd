@@ -14,31 +14,14 @@ def read_thread(epc_ip):
         ws = create_connection('ws://%s:9000' % epc_ip)
         ws.recv()
         ws.send('{"message":"stats"}')
-        result =  ws.recv()
-        utils.cpu_load(ws, result, epc_ip)
-        utils.s1_connections(ws, result, epc_ip)
-        utils.ng_connections(ws, result, epc_ip)
-        ws.send('{"message":"enb"}')
+                
         result =  ws.recv()
         j_res = json.loads(result)
-
-        # connected enbs
-        vl = collectd.Values(type='count')
-
-        vl.host=epc_ip
-
-        for i in range (0,len(j_res['enb_list'])):
-            plmn = j_res['enb_list'][i]['plmn']
-            eNB_ID = j_res['enb_list'][i]['eNB_ID']
-            address = j_res['enb_list'][i]['address']
-            ue_ctx = j_res['enb_list'][i]['ue_ctx']
-            address=address[0:address.index(":")]
-            vl.plugin='epc_enb_ctx'
-            vl.plugin_instance="ip_"+str(address)+"_ID_"+str(eNB_ID)+"_ID"
-            vl.type_instance = "plmn:{}".format(plmn)
-            vl.interval=5
-            vl.dispatch(values=[ue_ctx])
-        ws.shutdown
+        utils.cpu_load(ws, j_res, epc_ip)
+        utils.s1_connections(ws, j_res, epc_ip)
+        utils.ng_connections(ws, j_res, epc_ip)
+        utils.s1_ue_connections(ws, j_res, epc_ip)
+        utils.s1_ng_connections(ws, j_res, epc_ip)
 
     except Exception as e:
         print(e)
@@ -56,7 +39,8 @@ def read(data=None):
 
 
 def write(vl, data=None):
-    print ("(plugin: %s host: %s type: %s pl.i: %s ty.i: %s): %s\n" % (vl.plugin, vl.host, vl.type,vl.plugin_instance,vl.type_instance, vl.values))
+    print ("(plugin: %s host: %s type: %s pl.i: %s ty.i: %s): %s\n" \
+         % (vl.plugin, vl.host, vl.type,vl.plugin_instance,vl.type_instance, vl.values))
 
 
 
