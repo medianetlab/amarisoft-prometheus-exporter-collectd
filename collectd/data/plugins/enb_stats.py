@@ -9,12 +9,19 @@ enb_list = []
 
 def read_thread(enb_ip):
     try:
+
         ws = create_connection('ws://%s:9001' % enb_ip)
         ws.recv()
+
+        ws.send('{"message":"config_get"}')
+        result =  ws.recv()
+        j_res = json.loads(result)
+        enb_id = utils.get_ran_id(j_res)
+
         ws.send('{"message":"stats"}')
         result =  ws.recv()
         j_res = json.loads(result)
-        utils.cpu_load(ws, j_res, enb_ip)
+        utils.cpu_load(ws, j_res, enb_id)
 
 
         # # enb throughput

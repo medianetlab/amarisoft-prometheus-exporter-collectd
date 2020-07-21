@@ -13,15 +13,18 @@ def read_thread(epc_ip):
         
         ws = create_connection('ws://%s:9000' % epc_ip)
         ws.recv()
-        ws.send('{"message":"stats"}')
-                
+
+        ws.send('{"message":"stats"}')      
         result =  ws.recv()
         j_res = json.loads(result)
         utils.cpu_load(ws, j_res, epc_ip)
         utils.s1_connections(ws, j_res, epc_ip)
         utils.ng_connections(ws, j_res, epc_ip)
-        utils.s1_ue_connections(ws, j_res, epc_ip)
-        utils.s1_ng_connections(ws, j_res, epc_ip)
+
+        ws.send('{"message":"ue_get"}')   
+        result =  ws.recv()
+        j_res = json.loads(result)
+        utils.ue_info(ws, j_res, epc_ip)
 
     except Exception as e:
         print(e)
