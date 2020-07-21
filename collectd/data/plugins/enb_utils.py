@@ -23,16 +23,32 @@ def get_ran_id(j_res):
     else:
         return '-1'
 
-def get_cells_info(j_res):
+def get_lte_cells(j_res):
+    cells = []
+    if j_res and j_res.get('cells'):
+        for key in j_res.get('cells'):
+            cells.append(key)
+    return cells
+
+def get_nr_cells(j_res):
+    cells = []
+    if j_res and j_res.get('nr_cells'):
+        for key in j_res.get('nr_cells'):
+            cells.append(key)
+    return cells                 
 
 
-def cell_throughput(ws, j_res, enb_id, cell_ids):
+def cell_throughput(ws, j_res, enb_id, lte_cells, nr_cells):
     vl = collectd.Values(type='throughput')
     vl.plugin='cell'
     vl.plugin_instance='total'
     vl.host=enb_id
-    vl.type_instance='dl'
     vl.interval=5
-    vl.dispatch(values=[j_res["cells"]["1"]["dl_bitrate"]])
-    vl.type_instance='ul'
-    vl.dispatch(values=[j_res["cells"]["1"]["ul_bitrate"]])
+    for cell in lte_cells:
+        vl.plugin_instance=cell
+        vl.type_instance='lte'
+        vl.dispatch(values=[j_res["cells"][cell]["ul_bitrate"], j_res["cells"][cell]["dl_bitrate"]])
+    for cell in nr_cells:
+        vl.plugin_instance=cell
+        vl.type_instance='nr'
+        vl.dispatch(values=[j_res["cells"][cell]["ul_bitrate"], j_res["cells"][cell]["dl_bitrate"]])

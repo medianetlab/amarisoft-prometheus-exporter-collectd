@@ -17,24 +17,14 @@ def read_thread(enb_ip):
         result =  ws.recv()
         j_res = json.loads(result)
         enb_id = utils.get_ran_id(j_res)
-
+        lte_cells = utils.get_lte_cells(j_res)
+        nr_cells = utils.get_nr_cells(j_res)
         ws.send('{"message":"stats"}')
         result =  ws.recv()
         j_res = json.loads(result)
         utils.cpu_load(ws, j_res, enb_id)
+        utils.cell_throughput(ws, j_res, enb_id, lte_cells, nr_cells)
 
-
-        # # enb throughput
-        # vl = collectd.Values(type='bitrate')
-        # vl.plugin='enb_stats'
-        # vl.plugin_instance='total'
-        # vl.host=enb_ip
-        # vl.type_instance='dl'
-        # vl.interval=5
-        # #print(j_res)
-        # vl.dispatch(values=[j_res["cells"]["1"]["dl_bitrate"]])
-        # vl.type_instance='ul'
-        # vl.dispatch(values=[j_res["cells"]["1"]["ul_bitrate"]])
 
         # # enb ue_count
         # ws.send('{"message":"ue_get" ,"stats"=true}')
