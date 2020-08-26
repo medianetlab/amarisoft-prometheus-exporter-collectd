@@ -8,7 +8,9 @@ import epc_utils as utils
 
 epc_list = []
 
+
 def read_thread(epc_ip):
+    ws = None
     try:
         
         ws = create_connection('ws://%s:9000' % epc_ip)
@@ -29,7 +31,8 @@ def read_thread(epc_ip):
     except Exception as e:
         print(e)
         print('epc @ %s is not connected !' % epc_ip)
-        ws.shutdown
+        if ws:
+            ws.shutdown
 
 
 def read(data=None):

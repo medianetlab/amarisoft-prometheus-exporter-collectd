@@ -8,8 +8,8 @@ import enb_utils as utils
 enb_list = []
 
 def read_thread(enb_ip):
+    ws = None
     try:
-
         ws = create_connection('ws://%s:9001' % enb_ip)
         ws.recv()
 
@@ -25,7 +25,7 @@ def read_thread(enb_ip):
         utils.cpu_load(ws, j_res, enb_id)
         utils.cell_throughput(ws, j_res, enb_id, lte_cells, nr_cells)
 
-
+        ########################################
         # # enb ue_count
         # ws.send('{"message":"ue_get" ,"stats"=true}')
         # result =  ws.recv()
@@ -114,7 +114,8 @@ def read_thread(enb_ip):
     except Exception as e:
         print(e)
         print('enb @ %s is not connected !' % enb_ip)
-        ws.shutdown
+        if ws:
+            ws.shutdown
 
 
 def read(data=None):

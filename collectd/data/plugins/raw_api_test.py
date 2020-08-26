@@ -28,7 +28,10 @@ if (j_res['message'] == 'ready'):
     while(message != 'exit'):
         message = input("message: ")
         try:
-            ws.send("{\"message\":\"%s\"}" % (message))
+            if message == "ue_get":
+                ws.send("{\"message\":\"ue_get\" ,\"stats\"=true}")
+            else:    
+                ws.send("{\"message\":\"%s\"}" % (message))
             result =  ws.recv()
             j_res = json.loads(result)
             print(j_res)

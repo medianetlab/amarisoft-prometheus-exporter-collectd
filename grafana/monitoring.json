@@ -2,7 +2,7 @@
     "annotations": {
       "list": [
         {
-          "$$hashKey": "object:104",
+          "$$hashKey": "object:124",
           "builtIn": 1,
           "datasource": "-- Grafana --",
           "enable": true,
@@ -17,7 +17,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": 63,
-    "iteration": 1595353031107,
+    "iteration": 1598457062228,
     "links": [],
     "panels": [
       {
@@ -820,6 +820,7 @@
         ],
         "targets": [
           {
+            "$$hashKey": "object:247",
             "expr": "sum(collectd_ue_info_enb_ue_id {exported_instance='$enb_id'}) by (exported_instance, ue)",
             "format": "table",
             "hide": false,
@@ -829,6 +830,7 @@
             "refId": "A"
           },
           {
+            "$$hashKey": "object:248",
             "expr": "sum(collectd_ue_info_mme_ue_id {exported_instance='$enb_id'}) by (exported_instance, ue)",
             "format": "table",
             "instant": true,
@@ -836,6 +838,7 @@
             "refId": "B"
           },
           {
+            "$$hashKey": "object:249",
             "expr": "sum(collectd_ue_info_registered {exported_instance='$enb_id'}) by (exported_instance, ue)",
             "format": "table",
             "instant": true,
@@ -843,6 +846,7 @@
             "refId": "C"
           },
           {
+            "$$hashKey": "object:250",
             "expr": "sum(collectd_ue_info_total_dl {exported_instance='$enb_id'}) by (exported_instance, ue)",
             "format": "table",
             "instant": true,
@@ -850,6 +854,7 @@
             "refId": "D"
           },
           {
+            "$$hashKey": "object:251",
             "expr": "sum(collectd_ue_info_total_ul {exported_instance='$enb_id'}) by (exported_instance, ue)",
             "format": "table",
             "instant": true,
@@ -1078,7 +1083,6 @@
         "steppedLine": false,
         "targets": [
           {
-            "$$hashKey": "object:261",
             "expr": "collectd_cell_throughput_dl{exported_instance='$enb_id',type=\"lte\"}/1000000",
             "format": "time_series",
             "hide": false,
@@ -1089,7 +1093,6 @@
             "refId": "A"
           },
           {
-            "$$hashKey": "object:262",
             "expr": "collectd_cell_throughput_ul{exported_instance='$enb_id',type=\"lte\"}/1000000",
             "format": "time_series",
             "hide": false,
@@ -1146,7 +1149,7 @@
         "bars": true,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "MNLabDB",
+        "datasource": "radio_monitor",
         "fill": 1,
         "gridPos": {
           "h": 9,
@@ -1180,6 +1183,7 @@
         "steppedLine": false,
         "targets": [
           {
+            "$$hashKey": "object:873",
             "expr": "collectd_enb_ue_count{exported_instance='$enb_ip'}",
             "format": "time_series",
             "hide": false,
@@ -1233,17 +1237,17 @@
         }
       },
       {
-        "content": "# title",
+        "content": "<h1 style=\"background-color:#339933 ; text-align:center\">UEs </h1>",
         "gridPos": {
-          "h": 1,
+          "h": 2,
           "w": 24,
           "x": 0,
           "y": 22
         },
-        "id": 9,
+        "id": 37,
         "links": [],
-        "mode": "markdown",
-        "title": "UE Statistics",
+        "mode": "html",
+        "title": "",
         "type": "text"
       },
       {
@@ -1257,7 +1261,7 @@
           "h": 9,
           "w": 8,
           "x": 0,
-          "y": 23
+          "y": 24
         },
         "id": 4,
         "legend": {
@@ -1359,7 +1363,7 @@
           "h": 9,
           "w": 8,
           "x": 8,
-          "y": 23
+          "y": 24
         },
         "id": 12,
         "legend": {
@@ -1450,7 +1454,7 @@
           "h": 9,
           "w": 8,
           "x": 16,
-          "y": 23
+          "y": 24
         },
         "id": 14,
         "legend": {
@@ -1541,7 +1545,7 @@
           "h": 9,
           "w": 8,
           "x": 0,
-          "y": 32
+          "y": 33
         },
         "id": 15,
         "legend": {
@@ -1632,7 +1636,7 @@
           "h": 9,
           "w": 8,
           "x": 8,
-          "y": 32
+          "y": 33
         },
         "id": 16,
         "legend": {
@@ -1723,7 +1727,7 @@
           "h": 9,
           "w": 8,
           "x": 16,
-          "y": 32
+          "y": 33
         },
         "id": 13,
         "legend": {
@@ -1891,28 +1895,25 @@
         {
           "allValue": null,
           "current": {
-            "isNone": true,
-            "text": "None",
-            "value": ""
+            "text": "140",
+            "value": "140"
           },
-          "datasource": "MNLabDB",
-          "definition": "query_result(sum by (ue_stats)(collectd_ue_stats_bitrate{exported_instance=\"$enb_ip\"}))",
+          "datasource": "radio_monitor",
           "hide": 0,
           "includeAll": false,
           "label": null,
           "multi": false,
           "name": "mme_ue_id",
           "options": [],
-          "query": "query_result(sum by (ue_stats)(collectd_ue_stats_bitrate{exported_instance=\"$enb_ip\"}))",
+          "query": "query_result(collectd_ue_info_mme_ue_id {exported_instance='$enb_id'})",
           "refresh": 2,
-          "regex": ".*ue_stats=\"(.*?)\".*",
-          "skipUrlSync": false,
-          "sort": 1,
+          "regex": ".*\"} (.*?) .*",
+          "sort": 0,
           "tagValuesQuery": "",
           "tags": [],
           "tagsQuery": "",
           "type": "query",
-          "useTags": false
+          "useTags": true
         }
       ]
     },
@@ -1948,5 +1949,5 @@
     "timezone": "",
     "title": "Amarisoft 5G Infra Monitoring",
     "uid": "9Rf2Mgli2",
-    "version": 45
+    "version": 49
   }
