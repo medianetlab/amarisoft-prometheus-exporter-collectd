@@ -285,3 +285,4 @@ pucch_snr               value:GAUGE:U:U
 pusch_snr               value:GAUGE:U:U
 throughput              ul:GAUGE:0:4294967295, dl:GAUGE:0:4294967295
 info                    total_ul:GAUGE:0:4294967295, total_dl:GAUGE:0:4294967295, radio_id:GAUGE:-1:U, core_id:GAUGE:-1:U, registered:GAUGE:0:1
+stats                   mcs_dl:GAUGE:0:U, mcs_ul:GAUGE:0:U, cqi:GAUGE:0:U, tx_dl:GAUGE:0:U, tx_ul:GAUGE:0:U, retx_dl:GAUGE:0:U, retx_ul:GAUGE:0:U

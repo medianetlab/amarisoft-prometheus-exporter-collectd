@@ -16,100 +16,24 @@ def read_thread(enb_ip):
         ws.send('{"message":"config_get"}')
         result =  ws.recv()
         j_res = json.loads(result)
-        enb_id = utils.get_ran_id(j_res)
+        ran_id = utils.get_ran_id(j_res)
         lte_cells = utils.get_lte_cells(j_res)
         nr_cells = utils.get_nr_cells(j_res)
         ws.send('{"message":"stats"}')
         result =  ws.recv()
         j_res = json.loads(result)
-        utils.cpu_load(ws, j_res, enb_id)
-        utils.cell_throughput(ws, j_res, enb_id, lte_cells, nr_cells)
+        utils.cpu_load(j_res, ran_id)
+        utils.cell_throughput(ws, j_res, ran_id, lte_cells, nr_cells)
 
-        ########################################
-        # # enb ue_count
-        # ws.send('{"message":"ue_get" ,"stats"=true}')
-        # result =  ws.recv()
-        # j_res = json.loads(result)
-        # #print(j_res)
-        # vl = collectd.Values(type='count')
-        # vl.plugin='enb_ue'
-        # vl.plugin_instance='total'
-        # vl.host=enb_ip
-        # vl.type_instance='none'
-        # vl.interval=5
-        # vl.dispatch(values=[len(j_res['ue_list'])])
+        ws.send('{"message":"ue_get" ,"stats"=true}')
+        result =  ws.recv()
+        j_res = json.loads(result)
+        utils.ue_count(j_res,ran_id)
+        imsi_list = utils.imsi_id(enb_ip)
+        utils.ue_bitrate(j_res, imsi_list, ran_id)
+        utils.ue_stats(j_res, imsi_list, ran_id)
+        utils.ue_snr(j_res, imsi_list, ran_id)
 
-        # # ue bitrate
-        # for i in range (0,len(j_res['ue_list'])):
-        #     if(len(j_res['ue_list'][i]['cells'][0]) > 1):
-        #         mme_ue_id = j_res['ue_list'][i]['mme_ue_id']
-        #         enb_ue_id = j_res['ue_list'][i]['enb_ue_id']
-        #         vl = collectd.Values(type='bitrate')
-        #         vl.plugin='ue_stats'
-        #         vl.plugin_instance=str(mme_ue_id)
-        #         vl.host=enb_ip
-        #         vl.type_instance='dl'
-        #         vl.interval=5
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['dl_bitrate']])
-        #         vl.type_instance='ul'
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['ul_bitrate']])
-     
-
-        # # ue cqi
-        # for i in range (0,len(j_res['ue_list'])):
-        #     if(len(j_res['ue_list'][i]['cells'][0]) > 1):
-        #         mme_ue_id = j_res['ue_list'][i]['mme_ue_id']
-        #         enb_ue_id = j_res['ue_list'][i]['enb_ue_id']
-        #         vl = collectd.Values(type='cqi')
-        #         vl.plugin='ue_stats'
-        #         vl.plugin_instance=str(mme_ue_id)
-        #         vl.host=enb_ip
-        #         vl.type_instance='cqi'
-        #         vl.interval=5
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['cqi']])
-
-        # # ue mcs
-        # for i in range (0,len(j_res['ue_list'])):
-        #     if(len(j_res['ue_list'][i]['cells'][0]) > 1):
-        #         mme_ue_id = j_res['ue_list'][i]['mme_ue_id']
-        #         enb_ue_id = j_res['ue_list'][i]['enb_ue_id']
-        #         vl = collectd.Values(type='mcs')
-        #         vl.plugin='ue_stats'
-        #         vl.plugin_instance=str(mme_ue_id)
-        #         vl.host=enb_ip
-        #         vl.type_instance='dl'
-        #         vl.interval=5
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['dl_mcs']])
-        #         vl.type_instance='ul'
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['ul_mcs']])
-
-        # # ue pucch_snr
-        # for i in range (0,len(j_res['ue_list'])):
-        #     if(len(j_res['ue_list'][i]['cells'][0]) > 1):
-        #         mme_ue_id = j_res['ue_list'][i]['mme_ue_id']
-        #         enb_ue_id = j_res['ue_list'][i]['enb_ue_id']
-        #         vl = collectd.Values(type='pucch_snr')
-        #         vl.plugin='ue_stats'
-        #         vl.plugin_instance=str(mme_ue_id)
-        #         vl.host=enb_ip
-        #         vl.type_instance='snr'
-        #         vl.interval=5
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['pucch1_snr']])
-
-
-        # # ue pusch_snr
-        # for i in range (0,len(j_res['ue_list'])):
-        #     if(len(j_res['ue_list'][i]['cells'][0]) > 1):
-        #         mme_ue_id = j_res['ue_list'][i]['mme_ue_id']
-        #         enb_ue_id = j_res['ue_list'][i]['enb_ue_id']
-        #         vl = collectd.Values(type='pusch_snr')
-        #         vl.plugin='ue_stats'
-        #         vl.plugin_instance=str(mme_ue_id)
-        #         vl.host=enb_ip
-        #         vl.type_instance='snr'
-        #         vl.interval=5
-        #         vl.dispatch(values=[j_res['ue_list'][i]['cells'][0]['pusch_snr']])
-        # ws.shutdown
 
     except Exception as e:
         print(e)
