@@ -9,8 +9,9 @@ def cpu_load(ws, j_res, epc_ip):
         vl.plugin_instance = "mme"
         vl.type_instance = "single_core"
         vl.interval = 5
-        val = j_res['cpu']['global']
-        vl.dispatch(values=[val])
+        if j_res['cpu']:
+            val = j_res['cpu']['global']
+            vl.dispatch(values=[val])
     except Exception as ex:
         print(ex)    
    
@@ -54,22 +55,42 @@ def ue_info(ws, j_res, epc_ip):
         vl.interval=5
         ue_list=j_res['ue_list']
         for ue in ue_list:
-            vl.host=str(ue['enb_id'])
-            vl.plugin_instance=str(ue['imsi'])
-            vl.type_instance=str(ue['tac'])
-            registered = 0
-            enb_ue_id = -1
-            mme_ue_id = -1
-            if ue['registered']:
-                registered = 1
-                enb_ue_id = ue['enb_ue_id']
-                mme_ue_id = ue['mme_ue_id']
-            bearers = ue['bearers']
-            dl_speed = 0
-            ul_speed = 0
-            for bearer in bearers:
-                dl_speed = dl_speed + bearer['dl_total_bytes']
-                ul_speed = ul_speed + bearer['ul_total_bytes']
-            vl.dispatch(values=[dl_speed, ul_speed, enb_ue_id, mme_ue_id, registered])
+            if 'enb_id' in ue:
+                vl.host=str(ue['enb_id'])
+                vl.plugin_instance=str(ue['imsi'])
+                vl.type_instance=str(ue['tac'])
+                registered = 0
+                enb_ue_id = -1
+                mme_ue_id = -1
+                if ue['registered']:
+                    registered = 1
+                    enb_ue_id = ue['enb_ue_id']
+                    mme_ue_id = ue['mme_ue_id']
+                bearers = ue['bearers']
+                dl_speed = 0
+                ul_speed = 0
+                for bearer in bearers:
+                    dl_speed = dl_speed + bearer['dl_total_bytes']
+                    ul_speed = ul_speed + bearer['ul_total_bytes']
+                vl.dispatch(values=[dl_speed, ul_speed, enb_ue_id, mme_ue_id, registered])
+            if 'ran_id' in ue:
+                vl.host=str(ue['ran_id'])
+                vl.plugin_instance=str(ue['imsi'])
+                vl.type_instance=str(ue['tac'])
+                registered = 0
+                enb_ue_id = -1
+                mme_ue_id = -1
+                if ue['registered']:
+                    registered = 1
+                    enb_ue_id = ue['ran_ue_id']
+                    mme_ue_id = ue['amf_ue_id']
+                bearers = ue['bearers']
+                dl_speed = 0
+                ul_speed = 0
+                for bearer in bearers:
+                    dl_speed = dl_speed + bearer['dl_total_bytes']
+                    ul_speed = ul_speed + bearer['ul_total_bytes']
+                vl.dispatch(values=[dl_speed, ul_speed, enb_ue_id, mme_ue_id, registered])
+
     except Exception as ex:
         print(ex)      

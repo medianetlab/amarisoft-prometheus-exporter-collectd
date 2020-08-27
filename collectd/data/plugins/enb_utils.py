@@ -9,8 +9,9 @@ def cpu_load(ws, j_res, enb_id):
         vl.plugin_instance = "enb"
         vl.type_instance = "single_core"
         vl.interval = 5
-        val = j_res['cpu']['global']
-        vl.dispatch(values=[val])
+        if j_res['cpu']:
+            val = j_res['cpu']['global']
+            vl.dispatch(values=[val])
     except Exception as ex:
         print(ex)    
 
